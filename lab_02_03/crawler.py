@@ -76,45 +76,49 @@ class LIFO_Authority_Policy:
         self.fetched = set([])
         self.authority_dict = {}
         self.stats = {}
+        self.auth_dir_finished = False
 
     def getURL(self, c, iteration):
-        for i in range(len(self.queue) - 1, -1, -1):
-            if self.queue[i] in self.fetched:
-                self.queue.pop(i)
-            else:
-                break
-
-        if len(self.queue) == 0:
-            for url in c.URLs:
-                if c.incomingURLs.get(url):
-                    self.authority_dict[url] = len(c.incomingURLs[url]) + 1
+        if not self.auth_dir_finished:
+            for i in range(len(self.queue) - 1, -1, -1):
+                if self.queue[i] in self.fetched:
+                    self.queue.pop(i)
                 else:
-                    self.authority_dict[url] = 1
-                print(url, self.authority_dict[url])
-            self.queue = c.seedURLs.copy()
-            self.fetched = set([])
-        probabilities = []
-        prob_sum = 0
-        for url in self.queue:
-            if not self.authority_dict.get(url):
-                self.authority_dict[url] = 1
-            prob_sum += self.authority_dict[url]
-        for url in self.queue:
-            probabilities.append(self.authority_dict[url] / prob_sum)
-        element = np.random.choice(self.queue, p=probabilities)
-        self.queue.remove(element)
-        self.fetched.add(element)
-        # Count how many times each page was fetched
-        if self.stats.get(element):
-            self.stats[element] += 1
+                    break
+
+            if len(self.queue) == 0:
+                for url in c.URLs:
+                    if c.incomingURLs.get(url):
+                        self.authority_dict[url] = len(c.incomingURLs[url]) + 1
+                    else:
+                        self.authority_dict[url] = 1
+                    print(url, self.authority_dict[url])
+                self.queue = c.seedURLs.copy()
+                self.auth_dir_finished = True
+            f = self.queue.pop()
+            self.fetched.add(f)
+            return f
+
         else:
-            self.stats[element] = 1
-        print('------')
-        print('Fetch counter')
-        for url, count in self.stats.items():
-            print(url, ': ',  count)
-        print('------')
-        return element
+            probabilities = []
+            urls_list = list(c.URLs)
+            prob_sum = 0
+            for url in urls_list:
+                prob_sum += self.authority_dict[url]
+            for url in urls_list:
+                probabilities.append(self.authority_dict[url] / prob_sum)
+            element = np.random.choice(urls_list, p=probabilities)
+            # Count how many times each page was fetched
+            if self.stats.get(element):
+                self.stats[element] += 1
+            else:
+                self.stats[element] = 1
+            print('------')
+            print('Fetch counter')
+            for url, count in self.stats.items():
+                print(url, ': ',  count)
+            print('------')
+            return element
 
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
         tmpList = list(retrievedURLs)
