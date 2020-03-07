@@ -95,30 +95,34 @@ class LIFO_Authority_Policy:
                     print(url, self.authority_dict[url])
                 self.queue = c.seedURLs.copy()
                 self.auth_dir_finished = True
+                return self.getElementByAuthority(c)
             f = self.queue.pop()
             self.fetched.add(f)
             return f
 
         else:
-            probabilities = []
-            urls_list = list(c.URLs)
-            prob_sum = 0
-            for url in urls_list:
-                prob_sum += self.authority_dict[url]
-            for url in urls_list:
-                probabilities.append(self.authority_dict[url] / prob_sum)
-            element = np.random.choice(urls_list, p=probabilities)
-            # Count how many times each page was fetched
-            if self.stats.get(element):
-                self.stats[element] += 1
-            else:
-                self.stats[element] = 1
-            print('------')
-            print('Fetch counter')
-            for url, count in self.stats.items():
-                print(url, ': ',  count)
-            print('------')
-            return element
+            return self.getElementByAuthority(c)
+
+    def getElementByAuthority(self, c):
+        probabilities = []
+        urls_list = list(c.URLs)
+        prob_sum = 0
+        for url in urls_list:
+            prob_sum += self.authority_dict[url]
+        for url in urls_list:
+            probabilities.append(self.authority_dict[url] / prob_sum)
+        element = np.random.choice(urls_list, p=probabilities)
+        # Count how many times each page was fetched
+        if self.stats.get(element):
+            self.stats[element] += 1
+        else:
+            self.stats[element] = 1
+        print('------')
+        print('Fetch counter')
+        for url, count in self.stats.items():
+            print(url, ': ', count)
+        print('------')
+        return element
 
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
         tmpList = list(retrievedURLs)
