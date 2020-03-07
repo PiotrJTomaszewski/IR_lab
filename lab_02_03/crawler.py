@@ -93,7 +93,6 @@ class LIFO_Authority_Policy:
                     else:
                         self.authority_dict[url] = 1
                     print(url, self.authority_dict[url])
-                self.queue = c.seedURLs.copy()
                 self.auth_dir_finished = True
                 return self.getElementByAuthority(c)
             f = self.queue.pop()
