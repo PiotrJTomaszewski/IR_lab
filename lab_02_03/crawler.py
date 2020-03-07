@@ -173,7 +173,7 @@ class Container:
         # Page (URL) to be fetched next
         self.toFetch = None
         # Number of iterations of a crawler.
-        self.iterations = 500
+        self.iterations = 50
 
         # If true: store all crawled html pages in the provided directory.
         self.storePages = True
@@ -313,17 +313,17 @@ def fetch(c):
     # -------------------------------------------------------------------------
 
 
-# Remove wrong URL (TODO)
+# Remove wrong URL (DONE)
 def removeWrongURL(c):
     c.URLs.remove(c.toFetch)
 
 
 # -------------------------------------------------------------------------
-# Parse this page and retrieve text (whole page) and URLs (TODO)
+# Parse this page and retrieve text (whole page) and URLs (DONE)
 def parse(c, page, iteration):
     # data to be saved (DONE)
     htmlData = page.read()
-    # obtained URLs (TODO)
+    # obtained URLs (DONE)
     p = Parser()
     p.feed(htmlData.decode('utf-8'))
     retrievedURLs = set(p.output_list)
@@ -334,7 +334,7 @@ def parse(c, page, iteration):
 
 
 # -------------------------------------------------------------------------
-# Normalise newly obtained links (TODO)
+# Normalise newly obtained links (DONE)
 def getNormalisedURLs(retrievedURLs):
     newURLs = set([])
     for i in retrievedURLs:
@@ -343,14 +343,13 @@ def getNormalisedURLs(retrievedURLs):
 
 
 # -------------------------------------------------------------------------
-# Remove duplicates (duplicates) (TODO)
+# Remove duplicates (duplicates) (DONE)
 def removeDuplicates(c, retrievedURLs):
-    # TODO
     return retrievedURLs.difference(c.URLs)
 
 
 # -------------------------------------------------------------------------
-# Filter out some URLs (TODO)
+# Filter out some URLs (DONE)
 def getFilteredURLs(c, retrievedURLs):
     retrievedURLs = getNormalisedURLs(retrievedURLs)
     tmp = []
