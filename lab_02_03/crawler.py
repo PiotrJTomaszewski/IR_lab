@@ -85,9 +85,12 @@ class LIFO_Authority_Policy:
                 break
 
         if len(self.queue) == 0:
-            for key, value in c.incomingURLs.items():
-                self.authority_dict[key] = len(value) + 1
-                print(key, self.authority_dict[key])
+            for url in c.URLs:
+                if c.incomingURLs.get(url):
+                    self.authority_dict[url] = len(c.incomingURLs[url]) + 1
+                else:
+                    self.authority_dict[url] = 1
+                print(url, self.authority_dict[url])
             self.queue = c.seedURLs.copy()
             self.fetched = set([])
         probabilities = []
@@ -101,12 +104,16 @@ class LIFO_Authority_Policy:
         element = np.random.choice(self.queue, p=probabilities)
         self.queue.remove(element)
         self.fetched.add(element)
+        # Count how many times each page was fetched
         if self.stats.get(element):
             self.stats[element] += 1
         else:
             self.stats[element] = 1
-        print(probabilities)
-        print(self.stats)
+        print('------')
+        print('Fetch counter')
+        for url, count in self.stats.items():
+            print(url, ': ',  count)
+        print('------')
         return element
 
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
@@ -166,7 +173,7 @@ class Container:
         # Page (URL) to be fetched next
         self.toFetch = None
         # Number of iterations of a crawler.
-        self.iterations = 50
+        self.iterations = 500
 
         # If true: store all crawled html pages in the provided directory.
         self.storePages = True
@@ -252,8 +259,9 @@ def main():
             print("   Newly obtained URLs (without duplicates) ...")
             for url in retrievedURLsWD:
                 print("      " + str(url))
-            for url in retrievedURLsWD:
-                c.URLs.add(url)
+        # This loop was in the debug section in the original file, but I suppose it shouldn't be there
+        for url in retrievedURLsWD:
+            c.URLs.add(url)
 
     # store urls
     if c.storeURLs:
@@ -317,7 +325,6 @@ def parse(c, page, iteration):
     htmlData = page.read()
     # obtained URLs (TODO)
     p = Parser()
-    x = htmlData.decode('utf-8')
     p.feed(htmlData.decode('utf-8'))
     retrievedURLs = set(p.output_list)
     if c.debug:
@@ -329,7 +336,6 @@ def parse(c, page, iteration):
 # -------------------------------------------------------------------------
 # Normalise newly obtained links (TODO)
 def getNormalisedURLs(retrievedURLs):
-    tmp = list(retrievedURLs)
     newURLs = set([])
     for i in retrievedURLs:
         newURLs.add(i.lower())
@@ -340,8 +346,7 @@ def getNormalisedURLs(retrievedURLs):
 # Remove duplicates (duplicates) (TODO)
 def removeDuplicates(c, retrievedURLs):
     # TODO
-    retrievedURLs.difference(c.URLs)
-    return retrievedURLs
+    return retrievedURLs.difference(c.URLs)
 
 
 # -------------------------------------------------------------------------
