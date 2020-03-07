@@ -77,6 +77,7 @@ class LIFO_Authority_Policy:
         self.authority_dict = {}
         self.stats = {}
         self.auth_dir_finished = False
+        self.probabilities = []
 
     def getURL(self, c, iteration):
         if not self.auth_dir_finished:
@@ -85,7 +86,6 @@ class LIFO_Authority_Policy:
                     self.queue.pop(i)
                 else:
                     break
-
             if len(self.queue) == 0:
                 for url in c.URLs:
                     if c.incomingURLs.get(url):
@@ -94,6 +94,7 @@ class LIFO_Authority_Policy:
                         self.authority_dict[url] = 1
                     print(url, self.authority_dict[url])
                 self.auth_dir_finished = True
+                self.calculateProbabilities(c)
                 return self.getElementByAuthority(c)
             f = self.queue.pop()
             self.fetched.add(f)
@@ -102,15 +103,15 @@ class LIFO_Authority_Policy:
         else:
             return self.getElementByAuthority(c)
 
-    def getElementByAuthority(self, c):
-        probabilities = []
-        urls_list = list(c.URLs)
+    def calculateProbabilities(self, c):
         prob_sum = 0
-        for url in urls_list:
+        for url in c.URLs:
             prob_sum += self.authority_dict[url]
-        for url in urls_list:
-            probabilities.append(self.authority_dict[url] / prob_sum)
-        element = np.random.choice(urls_list, p=probabilities)
+        for url in c.URLs:
+            self.probabilities.append(self.authority_dict[url] / prob_sum)
+
+    def getElementByAuthority(self, c):
+        element = np.random.choice(list(c.URLs), p=self.probabilities)
         # Count how many times each page was fetched
         if self.stats.get(element):
             self.stats[element] += 1
