@@ -4,3 +4,5 @@ out
 *.zip
 outputDocuments
 documents
+models
+*.bin
