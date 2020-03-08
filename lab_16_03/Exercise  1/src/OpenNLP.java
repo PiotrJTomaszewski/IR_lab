@@ -54,7 +54,7 @@ public class OpenNLP {
 		//stemming(); // When token doesn't exist in dict, lemmatizer returns "O" and stemmer returns original form of token
 		//chunking(); // B-prefix means that token is beginning of the chunk, I-prefix means that token is inside the chunk and not the first part of the chunk.
 		// There are 5 chunks. I think obtained results are not correct, because "on the table" should be a single chunk.
-		 nameFinding(); // Results are not fully correct. "Desk Set" isn't a person, and surnames like "Holmstrom" didn't make it into results.
+		nameFinding(); // Results are not fully correct. "Desk Set" isn't a person, and surnames like "Holmstrom" didn't make it into results.
 		// xxx model probably seeks for dates
 	}
 
