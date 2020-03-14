@@ -3,8 +3,6 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.PhoneExtractingContentHandler;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.sax.BodyContentHandler;
-import org.apache.xmlbeans.impl.regex.Match;
-import org.bouncycastle.asn1.cms.MetaData;
 import org.xml.sax.SAXException;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -84,7 +82,7 @@ public class Exercise1
 
     private LinkedList <String> exercise1b() throws IOException, TikaException, SAXException, ClassNotFoundException {
         System.out.println("Running exercise 1b...");
-        LinkedList <String> results = new LinkedList <>();
+        LinkedList <String> results;
         AutoDetectParser tikaParser = new AutoDetectParser();
         Metadata metadata = new Metadata();
         PhoneExtractingContentHandler telephoneHandler = new PhoneExtractingContentHandler(new BodyContentHandler(), metadata);
@@ -92,13 +90,7 @@ public class Exercise1
         try (InputStream stream = Exercise1.class.getResourceAsStream("Exercise1.zip")) {
             tikaParser.parse(stream, telephoneHandler, metadata);
         }
-
-        String[] numbers = metadata.getValues("phonenumbers");
-
-        for (String number : numbers) {
-            results.add(number);
-        }
-
+        results = new LinkedList<>(Arrays.asList(metadata.getValues("phonenumbers")));
         return results;
     }
 
@@ -139,7 +131,7 @@ public class Exercise1
 
     }
 
-    private String _data[] =
+    private String[] _data =
             {
                     "7256915622",
                     "4289519018",
@@ -181,5 +173,5 @@ public class Exercise1
                     "8692859252",
                     "1126740391",
                     "1765449317",
-                    };
+            };
 }

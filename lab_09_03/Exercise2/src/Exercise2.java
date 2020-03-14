@@ -63,7 +63,7 @@ public class Exercise2
         Metadata metadata = new Metadata();
         BodyContentHandler handler = new BodyContentHandler(Integer.MAX_VALUE);
 
-        try (InputStream stream = Exercise2.class.getResourceAsStream("documents/" + file.getName())) {
+        try (InputStream stream = new FileInputStream("src/documents/" + file.getName())) {
             tikaParser.parse(stream, handler, metadata);
         }
 
