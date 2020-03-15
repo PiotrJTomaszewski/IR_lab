@@ -67,14 +67,6 @@ public class Exercise2
             tikaParser.parse(stream, handler, metadata);
         }
 
-        String[] metadataNames = metadata.names();
-
-        if (file.getName().equals("test.docx")) {
-            for (String s : metadataNames) {
-                System.out.println(s);
-            }
-        }
-
         Date creationDate;
         Date lastSavedDate;
         try {
