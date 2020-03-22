@@ -15,6 +15,7 @@ import opennlp.tools.util.Span;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -69,7 +70,7 @@ public class MovieReviewStatictics
             File dir = new File(DOCUMENTS_PATH);
             File[] reviews = dir.listFiles((d, name) -> name.endsWith(".txt"));
 
-            _statisticsWriter = new PrintStream("statistics.txt", "UTF-8");
+            _statisticsWriter = new PrintStream("statistics.txt", StandardCharsets.UTF_8);
 
             Arrays.sort(reviews, Comparator.comparing(File::getName));
             for (File file : reviews)
@@ -126,19 +127,19 @@ public class MovieReviewStatictics
         // TODO: process the text to find the following statistics:
         // For each movie derive:
         //    - number of sentences
-        int noSentences = 0;
+        int noSentences;
         //    - number of tokens
-        int noTokens = 0;
+        int noTokens;
         //    - number of (unique) stemmed forms
-        int noStemmed = 0;
+        int noStemmed;
         //    - number of (unique) words from a dictionary (lemmatization)
-        int noWords = 0;
+        int noWords;
         //    -  people
-        Span people[] = new Span[] { };
+        Span[] people;
         //    - locations
-        Span locations[] = new Span[] { };
+        Span[] locations;
         //    - organisations
-        Span organisations[] = new Span[] { };
+        Span[] organisations;
 
         // TODO + compute the following overall (for all movies) POS tagging statistics:
         //    - percentage number of adverbs (class variable, private int _verbCount = 0)
@@ -196,11 +197,11 @@ public class MovieReviewStatictics
 
         // ------------------------------------------------------------------
 
-        for (int i = 0; i < tags.length; i++) {
-            if (tags[i].startsWith("R")) _adverbCount++;
-            else if (tags[i].startsWith("J")) _adjectiveCount++;
-            else if (tags[i].startsWith("N")) _nounCount++;
-            else if (tags[i].startsWith("M") || tags[i].startsWith("V")) _verbCount++;
+        for (String tag: tags) {
+            if (tag.startsWith("R")) _adverbCount++;
+            else if (tag.startsWith("J")) _adjectiveCount++;
+            else if (tag.startsWith("N")) _nounCount++;
+            else if (tag.startsWith("M") || tag.startsWith("V")) _verbCount++;
         }
 
         saveResults("Sentences", noSentences);
@@ -221,7 +222,7 @@ public class MovieReviewStatictics
         _statisticsWriter.println(s);
     }
 
-    private void saveNamedEntities(String entityType, Span spans[], String tokens[])
+    private void saveNamedEntities(String entityType, Span[] spans, String[] tokens)
     {
         StringBuilder s = new StringBuilder(entityType + ": ");
         for (int sp = 0; sp < spans.length; sp++)
