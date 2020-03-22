@@ -48,7 +48,7 @@ public class OpenNLP {
 		// Algorithm doesn't fall for every "bad" punctuation mark, it properly ignores some of them.
 		//posTagging(); // C: there is one mistake in tags, 'like' is considered as preposition in both sentences, when in first one it is a verb.
 		//lemmatization(); // lemmatizer seems to work better. Stemmer randomly cuts out last letter(s) of the word, f.e. reduces "provide" to "provid". Probably lemmatizer requires POS-tags to deal better with homonyms like "like" and for overall better performance.
-		//stemming(); // When token doesn't exist in dict, lemmatizer returns "O" and stemmer returns original form of token
+		//stemming(); // When token doesn't exist in dict, lemmatizer returns "O"
 		//chunking(); // B-prefix means that token is beginning of the chunk, I-prefix means that token is inside the chunk and not the first part of the chunk.
 		// There are 5 chunks. I think obtained results are not correct, because "on the table" should be a single chunk.
 		nameFinding(); // Results are not fully correct. "Desk Set" isn't a person, and surnames like "Holmstrom" didn't make it into results.
