@@ -15,7 +15,7 @@ L10 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 L = np.array([L1, L2, L3, L4, L5, L6, L7, L8, L9, L10])
 
-ITERATIONS = 5000
+ITERATIONS = 100
 
 def postprocess(result):
     indexes = []
@@ -52,9 +52,8 @@ def getM(L):
 def computePagerank(numOfIterations, M):
     q = 0.15
     v = np.array([[0.1], [0.1], [0.1], [0.1], [0.1], [0.1], [0.1], [0.1], [0.1], [0.1]])
-    v += q
     for i in range(numOfIterations):
-        v = (1 - q)*np.dot(M, v)
+        v = q + (1 - q)*np.dot(M, v)
     return postprocess(v)
 
 
@@ -66,8 +65,9 @@ def computePagerank(numOfIterations, M):
 def computeTrustrank(numOfIterations, M):
     q = 0.15
     v = np.array([[0.5], [0.5], [0], [0], [0], [0], [0], [0], [0], [0]])
+    d = np.array([[0.5], [0.5], [0], [0], [0], [0], [0], [0], [0], [0]])
     for i in range(numOfIterations):
-        v = q*v + (1 - q) * np.dot(M, v)
+        v = d*q + (1 - q) * np.dot(M, v)
     return postprocess(v)
 
 
@@ -90,3 +90,8 @@ print(tr)
     
 ### TODO 4: Repeat TODO 3 but remove the connections 3->7 and 1->5 (indexes: 2->6, 0->4) 
 ### before computing trustrank
+
+L[0][4] = L[2][6] = 0
+M = getM(L)
+tr = computeTrustrank(ITERATIONS, M)
+print(tr)
