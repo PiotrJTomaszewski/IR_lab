@@ -65,7 +65,7 @@ public class Indexer {
             ArrayList<Document> htmls = new ArrayList<>(files.length);
             for (int id = 0; id < files.length; id++) {
                 System.out.println("Loading " + files[id].getName());
-                // TODO finish getHTML document
+                // TODO finish getHTML document - DONE
                 htmls.add(getHTMLDocument("pages/" + files[id].getName(), id));
             }
             return htmls;
@@ -135,7 +135,7 @@ public class Indexer {
         // TODO create an INT field (IntPoint) that is indexed - DONE
         // and contains file size (bytes, .length())
         // ----------------------------------
-        document.add(new IntPoint(Constants.filesize, (int)file.length()));
+        document.add(new IntPoint(Constants.filesize_int, (int)file.length()));
 
         // ----------------------------------
         // //TODO IntPoint is not stored but we want to a file size - DONE
